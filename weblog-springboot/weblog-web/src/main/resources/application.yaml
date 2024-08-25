@@ -4,7 +4,7 @@ server:
 
 spring:
   profiles:
-    active: db
+    active: mysql
   jackson:
     # 设置后台返参，若字段值为 null, 是否返回
 #    default-property-inclusion: non_null
@@ -13,6 +13,21 @@ spring:
     multipart:
       # 限制上传文件大小
       max-file-size: 10MB
+  data:
+    mongodb:
+      uri: mongodb://blog:blog123456@192.168.31.177:27017/blog
+      authentication-database: blog
+
+mongo-plus:
+  data:
+    mongodb:
+      database: blog
+      connectTimeoutMS: 50000
+      host: 192.168.31.177
+      port: 27017
+      username: blog
+      password: blog123456
+      authentication-database: blog
 
 jwt:
   # 签发人

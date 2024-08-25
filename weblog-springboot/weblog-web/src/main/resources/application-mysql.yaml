@@ -13,8 +13,3 @@ spring:
       max-lifetime: 1800000
       connection-timeout: 30000
       connection-test-query: SELECT 1
-
-  data:
-    mongodb:
-      uri: mongodb://blog:blog123456@192.168.31.177:27017/blog
-      authentication-database: blog
