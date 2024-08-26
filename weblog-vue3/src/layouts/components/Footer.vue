@@ -9,8 +9,8 @@
             <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
                 Provided by&nbsp;
                 <li>
-                    <a href="https://www.quanxiaoha.com" target="_blank" class="mr-4 hover:underline md:mr-6">
-                        犬小哈</a>
+                    <a href="https://www.lsm1998.com" target="_blank" class="mr-4 hover:underline md:mr-6">
+                      lsm1998</a>
                 </li>
             </ul>
         </div>
