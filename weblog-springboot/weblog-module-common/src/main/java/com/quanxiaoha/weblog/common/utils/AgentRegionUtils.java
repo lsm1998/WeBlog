@@ -5,6 +5,9 @@ import com.quanxiaoha.weblog.common.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.Searcher;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -16,31 +19,41 @@ import java.net.UnknownHostException;
  * @description 访客IP归属地工具类
  */
 @Slf4j
-public class AgentRegionUtils {
+public class AgentRegionUtils
+{
 
     /**
      * 获取http请求ip
+     *
      * @param request 请求
      * @return ipAddress
      */
-    public static String getIpAddress(HttpServletRequest request) {
+    public static String getIpAddress(HttpServletRequest request)
+    {
         String ipAddress;
-        try {
+        try
+        {
             ipAddress = request.getHeader("x-forwarded-for");
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress))
+            {
                 ipAddress = request.getHeader("Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress))
+            {
                 ipAddress = request.getHeader("WL-Proxy-Client-IP");
             }
-            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress)) {
+            if (ipAddress == null || ipAddress.length() == 0 || "unknown".equalsIgnoreCase(ipAddress))
+            {
                 ipAddress = request.getRemoteAddr();
-                if ("127.0.0.1".equals(ipAddress)) {
+                if ("127.0.0.1".equals(ipAddress))
+                {
                     // 根据网卡取本机配置的IP
                     InetAddress inet = null;
-                    try {
+                    try
+                    {
                         inet = InetAddress.getLocalHost();
-                    } catch (UnknownHostException e) {
+                    } catch (UnknownHostException e)
+                    {
                         e.printStackTrace();
                     }
                     assert inet != null;
@@ -48,13 +61,16 @@ public class AgentRegionUtils {
                 }
             }
             // 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割 "***.***.***.***".length()
-            if (ipAddress != null && ipAddress.length() > 15) {
+            if (ipAddress != null && ipAddress.length() > 15)
+            {
                 // = 15
-                if (ipAddress.indexOf(",") > 0) {
+                if (ipAddress.indexOf(",") > 0)
+                {
                     ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
                 }
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             ipAddress = "";
         }
         return ipAddress;
@@ -62,51 +78,71 @@ public class AgentRegionUtils {
 
     /**
      * 根据ip 获取归属地
+     *
      * @param ip 访问ip
      * @return 返回归属地结果
      */
-    public static String getIpRegion(String ip, String xdbPath) {
+    public static String getIpRegion(String ip, String xdbPath)
+    {
         // 1、创建 searcher 对象
         String country = "中国";
         String hdu = "0";
         Searcher searcher;
-        try {
-            searcher = Searcher.newWithFileOnly(xdbPath);
-        } catch (IOException e) {
+        try
+        {
+            Resource resource = new ClassPathResource(xdbPath);
+            searcher = Searcher.newWithFileOnly(resource.getFile().getAbsolutePath());
+        } catch (IOException e)
+        {
             log.error("failed to create searcher with {}: {}\n", xdbPath, e);
             return "外太空";
         }
 
         // 2、查询 ip = "175.24.184.183";
-        try {
+        try
+        {
+            if ("127.0.0.1".equals(ip) || "::1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip))
+            {
+                return "本机";
+            }
             String region = searcher.search(ip);
             region = region.replace("|", " ");
             String[] cityList = region.split(" ");
-            if (cityList.length > 0) {
+            if (cityList.length > 0)
+            {
                 // 国内的显示到具体的省
-                if (country.equals(cityList[0])) {
-                    if (cityList.length > 1) {
-                        log.info(cityList[0]+"-"+cityList[2]+"-"+cityList[3]+"-"+cityList[4]);
-                        return cityList[0]+"-"+cityList[2]+"-"+cityList[3]+"-"+cityList[4];
+                if (country.equals(cityList[0]))
+                {
+                    if (cityList.length > 1)
+                    {
+                        log.info(cityList[0] + "-" + cityList[2] + "-" + cityList[3] + "-" + cityList[4]);
+                        return cityList[0] + "-" + cityList[2] + "-" + cityList[3] + "-" + cityList[4];
                     }
-                } else if (hdu.equals(cityList[0])) {
+                } else if (hdu.equals(cityList[0]))
+                {
                     return "中国-浙江省-杭州市-HDU";
-                } else {
+                } else
+                {
                     // 国外显示到国家城市
-                    if (cityList.length > 1) {
-                        return cityList[0]+"-"+cityList[2];
+                    if (cityList.length > 1)
+                    {
+                        return cityList[0] + "-" + cityList[2];
                     }
                 }
 
             }
-        } catch (Exception e) {
+        } catch (Exception e)
+        {
             log.error("failed to search({}): {}\n", ip, e);
             throw new BizException(ResponseCodeEnum.AGENT_REGION_SEARCH_ERROR);
-        } finally {
+        } finally
+        {
             // 3、关闭资源
-            try {
+            try
+            {
                 searcher.close();
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 log.error("failed to close searcher:", e);
             }
         }
