@@ -139,7 +139,7 @@ const onSubmit = () => {
         console.log("rePassword:" + form.rePassword)
 
         // 校验两次输入的密码是否一致
-        if (form.newPassword != form.rePassword) {
+        if (form.newPassword !== form.rePassword) {
             showMessage("两次输入的密码不一致！", 'warning')
             return
         }

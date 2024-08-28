@@ -1,8 +1,8 @@
 package com.quanxiaoha.weblog.web;
 
 import com.anwen.mongo.mapper.BaseMapper;
-import com.anwen.mongo.mapper.MongoPlusMapMapper;
-import com.quanxiaoha.weblog.common.domain.mongo.Article;
+import com.quanxiaoha.weblog.common.domain.mongo.PageHeader;
+import com.quanxiaoha.weblog.common.domain.mongo.TagDictionary;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,7 +19,7 @@ public class MongoTest
     public void testSelect()
     {
         System.out.println(("----- selectAll method test ------"));
-        List<Article> userList = baseMapper.list(Article.class);
+        List<TagDictionary> userList = baseMapper.list(TagDictionary.class);
         userList.forEach(System.out::println);
     }
 }

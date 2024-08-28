@@ -8,6 +8,7 @@ import AdminArticleList from '@/pages/admin/article-list.vue'
 import AdminCategoryList from '@/pages/admin/category-list.vue'
 import AdminTagList from '@/pages/admin/tag-list.vue'
 import AdminBlogSetting from '@/pages/admin/blog-setting.vue'
+import AdminPageHeaderList from '@/pages/admin/page-header-list.vue'
 import Index from '@/pages/frontend/index.vue'
 import ArticleDetail from '@/pages/frontend/article-detail.vue'
 import CategoryList from '@/pages/frontend/category-list.vue'
@@ -51,6 +52,12 @@ const routes = [
             component: AdminBlogSetting,
             meta: {
                 title: '博客设置'
+            }
+        },{
+            path: '/admin/blog/pageHeader',
+            component: AdminPageHeaderList,
+            meta: {
+                title: '页面头部设置'
             }
         }]
 
